@@ -8,7 +8,7 @@ function redirectBack(request: Request, path: string) {
 export async function POST(request: Request) {
   const auth = await requireMetaConnectAuth();
   if (!auth.ok) {
-    return redirectBack(request, "/ad-accounts?meta=error&reason=forbidden");
+    return redirectBack(request, "/settings?section=integrations&meta=error&reason=forbidden");
   }
 
   try {
@@ -16,13 +16,16 @@ export async function POST(request: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Disconnect failed";
     console.error("[meta/disconnect]", message);
-    return redirectBack(request, "/ad-accounts?meta=error&reason=connection_failed");
+    return redirectBack(request, "/settings?section=integrations&meta=error&reason=connection_failed");
   }
 
   const { searchParams } = new URL(request.url);
   const returnTo = searchParams.get("return_to");
   const safeReturn =
-    returnTo === "/settings" || returnTo === "/ad-accounts" ? returnTo : "/ad-accounts";
+    returnTo === "/settings" || returnTo === "/ad-accounts"
+      ? returnTo
+      : "/settings?section=integrations";
 
-  return redirectBack(request, `${safeReturn}?meta=disconnected`);
+  const separator = safeReturn.includes("?") ? "&" : "?";
+  return redirectBack(request, `${safeReturn}${separator}meta=disconnected`);
 }

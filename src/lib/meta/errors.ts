@@ -20,20 +20,21 @@ export const META_OAUTH_ERROR_MESSAGES: Record<MetaOAuthErrorReason, string> = {
   connection_failed: "Meta connection failed. Please try again.",
 };
 
+export const META_OAUTH_RETURN_PATH = "/settings?section=integrations";
+
 export function metaOAuthRedirectPath(
   reason?: MetaOAuthErrorReason,
   success?: boolean,
 ): string {
-  const base = "/ad-accounts";
   if (success) {
-    return `${base}?meta=connected`;
+    return `${META_OAUTH_RETURN_PATH}&meta=connected`;
   }
   if (reason) {
-    return `${base}?meta=error&reason=${reason}`;
+    return `${META_OAUTH_RETURN_PATH}&meta=error&reason=${reason}`;
   }
-  return base;
+  return META_OAUTH_RETURN_PATH;
 }
 
 export function metaDisconnectRedirectPath(): string {
-  return "/ad-accounts?meta=disconnected";
+  return `${META_OAUTH_RETURN_PATH}&meta=disconnected`;
 }

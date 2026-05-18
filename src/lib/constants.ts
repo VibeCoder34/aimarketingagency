@@ -8,7 +8,6 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: "Overview", href: "/", icon: "layout-dashboard" },
       { label: "Campaigns", href: "/campaigns", icon: "target" },
-      { label: "Ad Accounts", href: "/ad-accounts", icon: "building-2" },
       { label: "Recommendations", href: "/ai-insights", icon: "sparkles" },
     ],
   },
@@ -35,7 +34,7 @@ export const NAV_SECTIONS: NavSection[] = [
 export const ROUTE_TITLES: Record<string, string> = {
   "/": "Overview",
   "/campaigns": "Campaigns",
-  "/ad-accounts": "Ad Accounts",
+  "/ad-accounts": "Integrations",
   "/ad-accounts/meta-data-explorer": "Meta Data Explorer",
   "/ai-insights": "Recommendations",
   "/recommendations": "Recommendations",

@@ -89,8 +89,11 @@ export function MetaDataExplorerPage({ data }: { data: MetaDataExplorerPageData 
         {data.accounts.length === 0 ? (
           <p className="text-sm text-[var(--adpilot-text-muted)]">
             No connected Meta ad accounts found.{" "}
-            <Link href="/ad-accounts" className="text-[var(--adpilot-accent)] hover:underline">
-              Connect Meta Ads first
+            <Link
+              href="/settings?section=integrations"
+              className="text-[var(--adpilot-accent)] hover:underline"
+            >
+              Connect Meta Ads in Settings
             </Link>
             .
           </p>
@@ -143,8 +146,11 @@ export function MetaDataExplorerPage({ data }: { data: MetaDataExplorerPageData 
 
       <p className="text-xs text-[var(--adpilot-text-muted)]">
         Dashboard modules still use mock data.{" "}
-        <Link href="/ad-accounts" className="text-[var(--adpilot-accent)] hover:underline">
-          Back to Ad Accounts
+        <Link
+          href="/settings?section=integrations"
+          className="text-[var(--adpilot-accent)] hover:underline"
+        >
+          Back to Integrations
         </Link>
       </p>
     </div>

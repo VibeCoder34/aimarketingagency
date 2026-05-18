@@ -2,24 +2,38 @@
 
 import { useState } from "react";
 import type { AdAccountsPageData } from "@/lib/meta/queries";
-import { MetaConnectionSection } from "@/components/settings/meta-connection-section";
+import { SettingsIntegrationsPanel } from "@/components/settings/settings-integrations-panel";
 import { AIPageActionsBar } from "@/components/ai-companion/ai-page-actions-bar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 
 const TABS = [
-  "Meta Connection",
+  "Integrations",
   "Account & Profile",
   "Team Members",
   "AI & Analysis",
   "Report Defaults",
-  "Integrations",
   "Danger Zone",
 ] as const;
 
-export function SettingsPage({ metaConnection }: { metaConnection: AdAccountsPageData }) {
-  const [tab, setTab] = useState<(typeof TABS)[number]>("Meta Connection");
+type SettingsTab = (typeof TABS)[number];
+
+function tabFromSection(section: string | undefined): SettingsTab | undefined {
+  if (section === "integrations") return "Integrations";
+  return undefined;
+}
+
+export function SettingsPage({
+  metaConnection,
+  initialSection,
+}: {
+  metaConnection: AdAccountsPageData;
+  initialSection?: string;
+}) {
+  const [tab, setTab] = useState<SettingsTab>(
+    tabFromSection(initialSection) ?? "Integrations",
+  );
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
 
   return (
@@ -51,12 +65,11 @@ export function SettingsPage({ metaConnection }: { metaConnection: AdAccountsPag
             { actionId: "st-integrations", label: "Summarize integrations" },
           ]}
         />
-        {tab === "Meta Connection" && <MetaConnectionSection data={metaConnection} />}
         {tab === "Account & Profile" && <ProfileSection />}
         {tab === "Team Members" && <TeamSection />}
         {tab === "AI & Analysis" && <AiPrefsSection />}
         {tab === "Report Defaults" && <ReportDefaultsSection />}
-        {tab === "Integrations" && <IntegrationsSection />}
+        {tab === "Integrations" && <SettingsIntegrationsPanel metaConnection={metaConnection} />}
         {tab === "Danger Zone" && (
           <DangerZoneSection onConfirm={(a) => setConfirmAction(a)} />
         )}
@@ -210,44 +223,6 @@ function ReportDefaultsSection() {
         <input type="text" placeholder="Email list" className="w-full rounded border border-[var(--adpilot-border)] p-2" />
       </form>
     </Card>
-  );
-}
-
-function IntegrationsSection() {
-  const items = [
-    {
-      name: "Meta Ads",
-      status: "Configure in Ad Accounts",
-      desc: "Read-only ads_read connection for reporting",
-      action: "Open Ad Accounts",
-      href: "/ad-accounts",
-    },
-    { name: "Higgsfield AI", status: "Connected", desc: "Used for creative generation", action: "Manage" },
-    { name: "Slack", status: "Not connected", desc: "Connect for alert notifications", action: "Connect" },
-    { name: "Google Drive", status: "Not connected", desc: "Auto-save reports to Drive", action: "Connect" },
-    { name: "Zapier", status: "Not connected", desc: "Automate workflows", action: "Connect" },
-  ];
-  return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {items.map((item) => (
-        <Card key={item.name} title={item.name}>
-          <p className="text-sm">{item.status === "Connected" ? "Connected" : item.status}</p>
-          <p className="mt-1 text-xs text-[var(--adpilot-text-muted)]">{item.desc}</p>
-          {"href" in item && item.href ? (
-            <a
-              href={item.href}
-              className="mt-3 inline-flex rounded-[var(--adpilot-radius-item)] border border-[var(--adpilot-border)] px-3 py-2 text-sm font-medium hover:bg-[var(--adpilot-nav-active-bg)]"
-            >
-              {item.action}
-            </a>
-          ) : (
-            <Button type="button" variant="secondary" className="mt-3">
-              {item.action}
-            </Button>
-          )}
-        </Card>
-      ))}
-    </div>
   );
 }
 
