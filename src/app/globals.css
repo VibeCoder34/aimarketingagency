@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/* AdPilot dashboard shell (used by layout + body) */
+:root {
+  --adpilot-bg-main: #f5f5f0;
+  --adpilot-surface: #ffffff;
+  --adpilot-border: #e8e8e2;
+  --adpilot-text-primary: #1a1a1a;
+  --adpilot-text-muted: #888888;
+  --adpilot-accent: #1877f2;
+  --adpilot-nav-active-bg: #f0f0ea;
+  --adpilot-nav-hover-bg: #fafaf8;
+  --adpilot-radius-item: 8px;
+  --adpilot-radius-card: 12px;
+}
+
+/*
+  RLDS 1.0 — design tokens (colors, scale, radius, materiality).
+  Base gray scale: 0 = lightest surface, 100 = darkest (semantic doc).
+*/
+
+:root {
+  color-scheme: light;
+
+  /* Neutrals */
+  --rlds-gray-0: #ffffff;
+  --rlds-gray-2: #fafafa;
+  --rlds-gray-5: #f4f4f5;
+  --rlds-gray-10: #e4e4e7;
+  --rlds-gray-20: #d4d4d8;
+  --rlds-gray-30: #a1a1aa;
+  --rlds-gray-50: #71717a;
+  --rlds-gray-70: #3f3f46;
+  --rlds-gray-80: #27272a;
+  --rlds-gray-90: #18181b;
+  --rlds-gray-95: #0f0f12;
+  --rlds-gray-98: #0a0a0c;
+  --rlds-gray-100: #09090b;
+
+  /* Brand / status (approx. ramps — tune against Colors Base export when available) */
+  --rlds-blue-70: #2563eb;
+  --rlds-blue-30: #93c5fd;
+  --rlds-green-70: #16a34a;
+  --rlds-green-30: #86efac;
+  --rlds-red-70: #dc2626;
+  --rlds-red-30: #fca5a5;
+  --rlds-orange-70: #ea580c;
+  --rlds-orange-30: #fdba74;
+  --rlds-purple-70: #7c3aed;
+  --rlds-purple-30: #c4b5fd;
+
+  /* Semantic — light */
+  --rlds-bg: #f5f5f5;
+  --rlds-surface: var(--rlds-gray-0);
+  --rlds-surface-variant: var(--rlds-gray-5);
+  --rlds-inverse: var(--rlds-gray-100);
+  --rlds-text-primary: var(--rlds-gray-100);
+  --rlds-text-secondary: var(--rlds-gray-70);
+  --rlds-text-tertiary: var(--rlds-gray-50);
+  --rlds-text-quaternary: var(--rlds-gray-30);
+  --rlds-text-disabled: var(--rlds-gray-20);
+  --rlds-text-on-inverse: var(--rlds-gray-0);
+  --rlds-border-subtle: var(--rlds-gray-10);
+  --rlds-border-strong: var(--rlds-gray-20);
+  --rlds-ui-surface: var(--rlds-gray-10);
+  --rlds-ui-surface-2: var(--rlds-gray-5);
+  --rlds-control-surface: var(--rlds-gray-0);
+  --rlds-divider: var(--rlds-gray-10);
+  --rlds-overlay-hover: rgb(9 9 11 / 0.06);
+  --rlds-overlay-pressed: rgb(9 9 11 / 0.1);
+  --rlds-overlay-selected: var(--rlds-gray-100);
+  --rlds-gradient-start: #2dd4bf;
+  --rlds-gradient-end: #a855f7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --rlds-bg: #09090b;
+    --rlds-surface: var(--rlds-gray-100);
+    --rlds-surface-variant: var(--rlds-gray-95);
+    --rlds-inverse: var(--rlds-gray-0);
+    --rlds-text-primary: var(--rlds-gray-0);
+    --rlds-text-secondary: var(--rlds-gray-30);
+    --rlds-text-tertiary: var(--rlds-gray-50);
+    --rlds-text-quaternary: var(--rlds-gray-70);
+    --rlds-text-disabled: var(--rlds-gray-80);
+    --rlds-text-on-inverse: var(--rlds-gray-100);
+    --rlds-border-subtle: var(--rlds-gray-80);
+    --rlds-border-strong: var(--rlds-gray-70);
+    --rlds-ui-surface: var(--rlds-gray-90);
+    --rlds-ui-surface-2: var(--rlds-gray-95);
+    --rlds-control-surface: var(--rlds-gray-100);
+    --rlds-divider: var(--rlds-gray-80);
+    --rlds-overlay-hover: rgb(255 255 255 / 0.06);
+    --rlds-overlay-pressed: rgb(255 255 255 / 0.1);
+    --rlds-overlay-selected: var(--rlds-gray-0);
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-rlds-bg: var(--rlds-bg);
+  --color-rlds-surface: var(--rlds-surface);
+  --color-rlds-surface-variant: var(--rlds-surface-variant);
+  --color-rlds-inverse: var(--rlds-inverse);
+  --color-rlds-fg: var(--rlds-text-primary);
+  --color-rlds-fg-secondary: var(--rlds-text-secondary);
+  --color-rlds-fg-tertiary: var(--rlds-text-tertiary);
+  --color-rlds-fg-muted: var(--rlds-text-quaternary);
+  --color-rlds-fg-disabled: var(--rlds-text-disabled);
+  --color-rlds-fg-on-inverse: var(--rlds-text-on-inverse);
+  --color-rlds-border: var(--rlds-border-subtle);
+  --color-rlds-border-strong: var(--rlds-border-strong);
+  --color-rlds-ui: var(--rlds-ui-surface);
+  --color-rlds-ui-2: var(--rlds-ui-surface-2);
+  --color-rlds-control: var(--rlds-control-surface);
+  --color-rlds-divider: var(--rlds-divider);
+  --color-rlds-brand: var(--rlds-blue-70);
+  --color-rlds-success: var(--rlds-green-70);
+  --color-rlds-danger: var(--rlds-red-70);
+  --color-rlds-warning: var(--rlds-orange-70);
+  --color-rlds-help: var(--rlds-purple-70);
+  --color-rlds-incoming-bubble: #e9e9eb;
+  --color-rlds-outgoing-bubble: #1c1c1e;
+
+  --spacing-rlds-none: 0px;
+  --spacing-rlds-4xs: 2px;
+  --spacing-rlds-3xs: 4px;
+  --spacing-rlds-2xs: 6px;
+  --spacing-rlds-xs: 8px;
+  --spacing-rlds-sm: 12px;
+  --spacing-rlds-md: 16px;
+  --spacing-rlds-lg: 20px;
+  --spacing-rlds-xl: 24px;
+  --spacing-rlds-2xl: 32px;
+  --spacing-rlds-3xl: 40px;
+  --spacing-rlds-4xl: 48px;
+  --spacing-rlds-5xl: 64px;
+
+  --radius-rlds-none: 0px;
+  --radius-rlds-xs: 4px;
+  --radius-rlds-sm: 8px;
+  --radius-rlds-md: 16px;
+  --radius-rlds-lg: 24px;
+  --radius-rlds-xl: 32px;
+  --radius-rlds-full: 1000px;
+
+  --spacing-rlds-icon-2xs: 8px;
+  --spacing-rlds-icon-xs: 12px;
+  --spacing-rlds-icon-sm: 16px;
+  --spacing-rlds-icon-md: 18px;
+  --spacing-rlds-icon-lg: 24px;
+  --spacing-rlds-icon-xl: 32px;
+  --spacing-rlds-icon-2xl: 48px;
+  --spacing-rlds-icon-3xl: 72px;
+
+  --shadow-rlds-bevel: 0 0 0 1px rgb(9 9 11 / 0.05), 0 1px 2px rgb(9 9 11 / 0.04);
+  --shadow-rlds-float: 0 18px 48px rgb(9 9 11 / 0.12);
+  --shadow-rlds-inset: inset 0 1px 2px rgb(9 9 11 / 0.08);
+}
+
+@layer base {
+  body {
+    background: var(--adpilot-bg-main);
+    color: var(--adpilot-text-primary);
+    font-family: var(--font-sans);
+  }
+}
+
+/* Meta-branded auth shell (login / sign-up) */
+.auth-meta-page {
+  --meta-blue: #0866ff;
+  --meta-blue-hover: #0554d4;
+  --meta-bg: #f0f2f5;
+  --meta-text: #1c1e21;
+  --meta-text-secondary: #65676b;
+  --meta-border: #ccd0d5;
+}
+
+@layer components {
+  .rlds-h1 {
+    font-size: 32px;
+    line-height: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .rlds-h2 {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 700;
+    letter-spacing: -0.0125em;
+  }
+  .rlds-h3 {
+    font-size: 17px;
+    line-height: 20px;
+    font-weight: 700;
+    letter-spacing: -0.0125em;
+  }
+  .rlds-body-1-em {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 700;
+  }
+  .rlds-body-1 {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+  .rlds-body-2-em {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+  }
+  .rlds-body-2 {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+  }
+  .rlds-subhead {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+  }
+  .rlds-meta {
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 400;
+  }
+}
