@@ -104,23 +104,125 @@ export type NormalizedCampaignListItem = NormalizedCampaign & {
 
 export type NormalizedCampaignSummary = NormalizedCampaignListItem;
 
+/** Campaign row from cached meta_campaign_insights (Overview signals). */
+export type OverviewCampaignInsightRow = {
+  campaignId: string;
+  campaignName: string;
+  accountId: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  ctr: number;
+  cpc: number;
+  cpm: number;
+  frequency: number;
+  leads: number | null;
+  purchases: number | null;
+  costPerLead: number | null;
+  costPerPurchase: number | null;
+  roas: number | null;
+  conversionValue: number | null;
+  results: number | null;
+  resultType: "lead" | "purchase" | "none";
+};
+
+export type OverviewCampaignSignalsResultMode = "lead" | "purchase" | "traffic";
+
+export type OverviewCampaignSignals = {
+  available: boolean;
+  resultMode: OverviewCampaignSignalsResultMode;
+  purchaseRoasAvailable: boolean;
+  campaigns: OverviewCampaignInsightRow[];
+  topSpending: OverviewCampaignInsightRow[];
+  bestLeads: OverviewCampaignInsightRow[];
+  highSpendNoResults: OverviewCampaignInsightRow[];
+  lowCtr: OverviewCampaignInsightRow[];
+  highFrequency: OverviewCampaignInsightRow[];
+  leadBasedLabel?: string;
+  purchaseUnavailableLabel?: string;
+  emptyMessage?: string;
+};
+
+export type OverviewKpiTier = "primary" | "secondary";
+
 export type OverviewKpi = {
   id: string;
   label: string;
   value: number;
-  valueMode: "currency" | "number" | "ratio" | "percent";
+  valueMode: "currency" | "number" | "ratio" | "percent" | "percent_points";
   deltaPercent: number;
   deltaDirection: DeltaDirection;
   interpretation: string;
   /** When true, "up" delta is negative for efficiency metrics (ROAS, CPA) */
   invertDelta?: boolean;
+  tier?: OverviewKpiTier;
+  /** When false, card shows unavailable state instead of a numeric value */
+  available?: boolean;
+  unavailableReason?: string;
 };
+
+export type OverviewFunnelStep = {
+  id: string;
+  label: string;
+  value: number | null;
+  /** Step-over-step rate (%), null when prior step is missing or zero */
+  rateFromPrevious: number | null;
+  missing?: boolean;
+};
+
+export type OverviewFunnelVariant = "ecommerce" | "lead_gen" | "mixed" | "unknown";
+
+export type OverviewFunnelMetrics = {
+  variant: OverviewFunnelVariant;
+  steps: OverviewFunnelStep[];
+  message?: string;
+};
+
+/** Performance outcomes normalized from Meta actions — feeds KPIs, funnel, and future AI context */
+export type OverviewPerformance = {
+  results: number | null;
+  resultType: string | null;
+  costPerResult: number | null;
+  conversionValue: number | null;
+  roas: number | null;
+  purchases: number | null;
+  leads: number | null;
+  addToCart: number | null;
+  initiateCheckout: number | null;
+  viewContent: number | null;
+  landingPageViews: number | null;
+  funnelMetrics: OverviewFunnelMetrics;
+  hasConversionData: boolean;
+  conversionCoverageMessage?: string;
+};
+
+export type OverviewDataSourceLabel = "demo" | "live_meta";
+
+export type OverviewDisplayMode =
+  | "demo"
+  | "full"
+  | "select_account"
+  | "no_snapshot"
+  | "no_accounts"
+  | "reconnect_required";
 
 export type AccountOverviewContext = {
   accountName: string;
   dateRangeLabel: string;
   dateRangeDetail: string;
   lastSyncedAgo: string;
+  /** Product label for mock vs live Meta data */
+  dataSourceLabel?: OverviewDataSourceLabel;
+  dataSourceBadge?: string;
+  demoCtaLabel?: string;
+  canRefreshData?: boolean;
+  /** Internal connected_meta_ad_accounts.id for refresh API */
+  connectedMetaAdAccountUuid?: string;
+  metaAdAccountId?: string;
+  bannerTitle?: string;
+  bannerMessage?: string;
+  /** Meta Insights date_preset used for cache + sync (live mode) */
+  dateRangePreset?: string;
 };
 
 export type AccountHealthStatus = "healthy" | "needs_attention" | "at_risk";
@@ -287,24 +389,37 @@ export type AIQuickAction = {
 
 // ——— Aggregates ———
 
+export type OverviewSectionMessages = {
+  spendChart?: string;
+  campaigns?: string;
+  recommendations?: string;
+  budgetPacing?: string;
+};
+
 export type OverviewData = {
   source: DataSourceType;
+  displayMode: OverviewDisplayMode;
   account: NormalizedAccount;
   dateRange: DateRange;
   context: AccountOverviewContext;
   health: AccountHealth;
   kpis: OverviewKpi[];
+  /** Conversion-aware outcomes (live Meta + demo) */
+  performance?: OverviewPerformance | null;
   dailyInsights: NormalizedDailyInsight[];
   spendChartCaption: string;
   whatChanged: WhatChangedItem[];
   campaigns: NormalizedCampaignSummary[];
+  /** Live Meta campaign signals from meta_campaign_insights */
+  campaignSignals?: OverviewCampaignSignals | null;
   recommendations: Recommendation[];
-  budgetPacing: BudgetPacing;
+  budgetPacing: BudgetPacing | null;
   platformBreakdown: PlatformBreakdown[];
   platformInsight: string;
   dataCoverage: DataCoverageScore[];
   alerts: Alert[];
   aiQuickActions: AIQuickAction[];
+  sectionMessages?: OverviewSectionMessages;
 };
 
 export type CampaignsData = {
@@ -414,6 +529,17 @@ export type AIContextPayload = {
     deltaPercent: number;
     deltaDirection: DeltaDirection;
   }[];
+  performance: {
+    results: number | null;
+    resultType: string | null;
+    costPerResult: number | null;
+    conversionValue: number | null;
+    roas: number | null;
+    purchases: number | null;
+    leads: number | null;
+    funnelVariant: OverviewFunnelVariant;
+    hasConversionData: boolean;
+  } | null;
   campaignSignals: {
     campaignId: string;
     campaignName: string;

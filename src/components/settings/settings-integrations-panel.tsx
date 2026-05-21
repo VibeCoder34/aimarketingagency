@@ -16,6 +16,18 @@ export function SettingsIntegrationsPanel({ metaConnection }: { metaConnection: 
 
       <MetaIntegrationCard data={metaConnection} returnTo="/settings" />
 
+      {metaConnection.canConnect ? (
+        <p className="text-xs text-[var(--adpilot-text-muted)]">
+          <a
+            href="/settings/meta-reporting-debug"
+            className="text-[var(--adpilot-accent)] hover:underline"
+          >
+            Meta reporting data audit
+          </a>{" "}
+          (internal debug — owners/admins only)
+        </p>
+      ) : null}
+
       <div className="grid gap-4 md:grid-cols-2">
         <Card title="Higgsfield AI">
           <p className="text-sm text-[var(--adpilot-text-muted)]">Connected</p>

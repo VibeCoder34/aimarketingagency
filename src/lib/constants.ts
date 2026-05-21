@@ -43,5 +43,6 @@ export const ROUTE_TITLES: Record<string, string> = {
   "/analytics": "Analytics",
   "/alerts": "Alerts",
   "/settings": "Settings",
+  "/settings/meta-reporting-debug": "Meta reporting debug",
   "/login": "Sign in",
 };

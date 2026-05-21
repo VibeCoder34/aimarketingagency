@@ -77,7 +77,6 @@ function AccountBadges({ account }: { account: ConnectedMetaAdAccountRow }) {
   return (
     <div className="flex flex-wrap items-center gap-1">
       {account.is_selected && <Badge variant="success">Default</Badge>}
-      {/* TODO: account switching UI — expose default selection when product mode supports it */}
     </div>
   );
 }

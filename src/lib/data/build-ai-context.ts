@@ -26,6 +26,19 @@ export function buildAIContextPayload(data: OverviewData): AIContextPayload {
       deltaPercent: k.deltaPercent,
       deltaDirection: k.deltaDirection,
     })),
+    performance: data.performance
+      ? {
+          results: data.performance.results,
+          resultType: data.performance.resultType,
+          costPerResult: data.performance.costPerResult,
+          conversionValue: data.performance.conversionValue,
+          roas: data.performance.roas,
+          purchases: data.performance.purchases,
+          leads: data.performance.leads,
+          funnelVariant: data.performance.funnelMetrics.variant,
+          hasConversionData: data.performance.hasConversionData,
+        }
+      : null,
     campaignSignals: data.campaigns.map((c) => ({
       campaignId: c.id,
       campaignName: c.name,
@@ -37,15 +50,25 @@ export function buildAIContextPayload(data: OverviewData): AIContextPayload {
     recommendedActions: data.recommendations,
     dataCoverage: data.dataCoverage,
     alerts: data.alerts,
-    budgetPacing: {
-      spent: data.budgetPacing.spent,
-      total: data.budgetPacing.total,
-      percent: data.budgetPacing.percent,
-      status: data.budgetPacing.status,
-      statusLabel: data.budgetPacing.statusLabel,
-      projectedMonthEndSpend: data.budgetPacing.projectedMonthEndSpend,
-      daysRemaining: data.budgetPacing.daysRemaining,
-    },
+    budgetPacing: data.budgetPacing
+      ? {
+          spent: data.budgetPacing.spent,
+          total: data.budgetPacing.total,
+          percent: data.budgetPacing.percent,
+          status: data.budgetPacing.status,
+          statusLabel: data.budgetPacing.statusLabel,
+          projectedMonthEndSpend: data.budgetPacing.projectedMonthEndSpend,
+          daysRemaining: data.budgetPacing.daysRemaining,
+        }
+      : {
+          spent: 0,
+          total: 0,
+          percent: 0,
+          status: "on_track",
+          statusLabel: "Unavailable",
+          projectedMonthEndSpend: 0,
+          daysRemaining: 0,
+        },
     readOnlyDisclaimer: READ_ONLY_DISCLAIMER,
   };
 }

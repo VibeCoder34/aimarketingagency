@@ -29,6 +29,7 @@ import type {
   NormalizedDailyInsight,
   OverviewData,
   OverviewKpi,
+  OverviewPerformance,
   RecommendationData,
 } from "@/lib/data/types";
 import type { Campaign } from "@/types";
@@ -89,35 +90,56 @@ function mapTopCampaignsToNormalized(accountId: string): NormalizedCampaign[] {
   }));
 }
 
+function buildMockOverviewPerformance(): OverviewPerformance {
+  return {
+    results: MOCK_KPI_STATS.totalResults.value,
+    resultType: "Purchases",
+    costPerResult: MOCK_KPI_STATS.costPerResult.value,
+    conversionValue: 563_684,
+    roas: MOCK_KPI_STATS.avgROAS.value,
+    purchases: 8_420,
+    leads: 1_240,
+    addToCart: 24_600,
+    initiateCheckout: 12_800,
+    viewContent: 156_000,
+    landingPageViews: 412_000,
+    funnelMetrics: {
+      variant: "ecommerce",
+      steps: [
+        { id: "impressions", label: "Impressions", value: 4_200_000, rateFromPrevious: null },
+        { id: "clicks", label: "Clicks", value: 892_400, rateFromPrevious: 21.2 },
+        { id: "landing_page_views", label: "Landing page views", value: 412_000, rateFromPrevious: 46.2 },
+        { id: "view_content", label: "View content", value: 156_000, rateFromPrevious: 37.9 },
+        { id: "add_to_cart", label: "Add to cart", value: 24_600, rateFromPrevious: 15.8 },
+        { id: "initiate_checkout", label: "Initiate checkout", value: 12_800, rateFromPrevious: 52.0 },
+        { id: "purchases", label: "Purchases", value: 8_420, rateFromPrevious: 65.8 },
+      ],
+    },
+    hasConversionData: true,
+  };
+}
+
 function buildOverviewKpis(): OverviewKpi[] {
   return [
     {
       id: "totalSpend",
-      label: "Total Spend",
+      label: "Spend",
       value: MOCK_KPI_STATS.totalSpend.value,
       valueMode: "currency",
       deltaPercent: MOCK_KPI_STATS.totalSpend.deltaPercent,
       deltaDirection: MOCK_KPI_STATS.totalSpend.deltaDirection,
       interpretation: "Spend increased vs the previous period.",
-    },
-    {
-      id: "avgROAS",
-      label: "Blended ROAS",
-      value: MOCK_KPI_STATS.avgROAS.value,
-      valueMode: "ratio",
-      deltaPercent: MOCK_KPI_STATS.avgROAS.deltaPercent,
-      deltaDirection: MOCK_KPI_STATS.avgROAS.deltaDirection,
-      interpretation: "Efficiency softened slightly week over week.",
-      invertDelta: true,
+      tier: "primary",
     },
     {
       id: "totalResults",
-      label: "Results",
+      label: "Purchases",
       value: MOCK_KPI_STATS.totalResults.value,
       valueMode: "number",
       deltaPercent: MOCK_KPI_STATS.totalResults.deltaPercent,
       deltaDirection: MOCK_KPI_STATS.totalResults.deltaDirection,
       interpretation: "Conversion volume grew with higher spend.",
+      tier: "primary",
     },
     {
       id: "costPerResult",
@@ -128,6 +150,60 @@ function buildOverviewKpis(): OverviewKpi[] {
       deltaDirection: MOCK_KPI_STATS.costPerResult.deltaDirection,
       interpretation: "Cost per result rose as prospecting scaled.",
       invertDelta: true,
+      tier: "primary",
+    },
+    {
+      id: "avgROAS",
+      label: "ROAS",
+      value: MOCK_KPI_STATS.avgROAS.value,
+      valueMode: "ratio",
+      deltaPercent: MOCK_KPI_STATS.avgROAS.deltaPercent,
+      deltaDirection: MOCK_KPI_STATS.avgROAS.deltaDirection,
+      interpretation: "Efficiency softened slightly week over week.",
+      invertDelta: true,
+      tier: "primary",
+    },
+    {
+      id: "ctr",
+      label: "CTR",
+      value: 2.12,
+      valueMode: "percent_points",
+      deltaPercent: 0.3,
+      deltaDirection: "up",
+      interpretation: "Click-through rate for the period.",
+      tier: "secondary",
+    },
+    {
+      id: "cpc",
+      label: "CPC",
+      value: 0.18,
+      valueMode: "currency",
+      deltaPercent: 1.2,
+      deltaDirection: "up",
+      interpretation: "Cost per click.",
+      tier: "secondary",
+      invertDelta: true,
+    },
+    {
+      id: "cpm",
+      label: "CPM",
+      value: 3.92,
+      valueMode: "currency",
+      deltaPercent: 0.8,
+      deltaDirection: "neutral",
+      interpretation: "Cost per 1,000 impressions.",
+      tier: "secondary",
+      invertDelta: true,
+    },
+    {
+      id: "frequency",
+      label: "Frequency",
+      value: 2.4,
+      valueMode: "number",
+      deltaPercent: 0,
+      deltaDirection: "neutral",
+      interpretation: "Average impressions per reached user.",
+      tier: "secondary",
     },
   ];
 }
@@ -189,9 +265,16 @@ export function getMockOverviewData(params: DataRequestParams): OverviewData {
 
   return {
     source: "mock",
+    displayMode: "demo",
     account,
     dateRange,
-    context,
+    context: {
+      ...context,
+      dataSourceLabel: "demo",
+      dataSourceBadge: "Demo data",
+      demoCtaLabel: "Connect Meta to see live data",
+      canRefreshData: false,
+    },
     health: {
       status: MOCK_ACCOUNT_HEALTH.status,
       statusLabel: MOCK_ACCOUNT_HEALTH.statusLabel,
@@ -199,6 +282,7 @@ export function getMockOverviewData(params: DataRequestParams): OverviewData {
       chips: MOCK_ACCOUNT_HEALTH.chips,
     },
     kpis: buildOverviewKpis(),
+    performance: buildMockOverviewPerformance(),
     dailyInsights: mapDailyInsights(),
     spendChartCaption: MOCK_SPEND_CHART_CAPTION,
     whatChanged: MOCK_WHAT_CHANGED.map((row) => ({

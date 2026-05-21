@@ -1,19 +1,13 @@
 /**
- * Meta Marketing API adapter (stub).
- *
- * TODO: Implement OAuth-backed Meta integration:
- * - Fetch ad accounts for the authenticated user
- * - Fetch campaigns, ad sets, and ads for the selected ad account
- * - Fetch insights (account, campaign, ad set, ad) with date range + pagination
- * - Map Meta raw responses into AdPilot normalized types (see @/lib/data/types)
- * - Handle missing ROAS when revenue attribution is unavailable
- * - Handle missing or partial conversion/action breakdowns
- * - Respect rate limits and cache/sync timestamps for "last synced"
- * - Support breakdowns (publisher_platform, placement, etc.) where available
+ * Meta Marketing API adapter.
+ * Overview reads cached snapshots via resolveOverviewForPage — not live Meta on page load.
  */
 
 import type { CampaignDetailRequestParams, DataRequestParams } from "@/lib/data/params";
+import { resolveOverviewForPage } from "@/lib/data/resolve-overview-data";
 import type { CampaignDetailData, CampaignsData, OverviewData, RecommendationData } from "@/lib/data/types";
+import { isMetaConfigured } from "@/lib/meta/env";
+import { getAdAccountsPageData } from "@/lib/meta/queries";
 
 export class MetaAdapterNotImplementedError extends Error {
   constructor(feature: string) {
@@ -25,8 +19,8 @@ export class MetaAdapterNotImplementedError extends Error {
 }
 
 export async function getMetaOverviewData(_params: DataRequestParams): Promise<OverviewData> {
-  // TODO: call Meta Insights API → normalize → OverviewData
-  throw new MetaAdapterNotImplementedError("getOverviewData");
+  const metaConnection = await getAdAccountsPageData(isMetaConfigured());
+  return resolveOverviewForPage(metaConnection);
 }
 
 export async function getMetaCampaignsData(_params: DataRequestParams): Promise<CampaignsData> {

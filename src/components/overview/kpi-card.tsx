@@ -1,6 +1,6 @@
 import { Minus, TrendingDown, TrendingUp } from "lucide-react";
 import type { OverviewKpi } from "@/lib/data/types";
-import { cn, formatCurrency, formatNumber, formatPercent } from "@/lib/utils";
+import { cn, formatCurrency, formatNumber, formatPercent, formatPercentagePoints } from "@/lib/utils";
 import { overviewCardClass } from "@/components/overview/overview-shell";
 
 function formatValue(value: number, mode: OverviewKpi["valueMode"]) {
@@ -9,6 +9,8 @@ function formatValue(value: number, mode: OverviewKpi["valueMode"]) {
       return formatCurrency(value);
     case "percent":
       return formatPercent(value, 2);
+    case "percent_points":
+      return formatPercentagePoints(value, 2);
     case "ratio":
       return `${value.toFixed(2)}x`;
     default:
@@ -30,14 +32,20 @@ function deltaTone(direction: OverviewKpi["deltaDirection"], invert = false) {
 }
 
 export function KpiCard({ kpi }: { kpi: OverviewKpi }) {
+  const available = kpi.available !== false;
   const sign = kpi.deltaPercent > 0 ? "+" : "";
   const deltaText = `${sign}${kpi.deltaPercent.toFixed(1)}% vs prior period`;
 
   return (
     <article className={cn(overviewCardClass, "flex flex-col")}>
       <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">{kpi.label}</p>
-      <p className="mt-2 text-2xl font-semibold tracking-tight text-zinc-900 tabular-nums">
-        {formatValue(kpi.value, kpi.valueMode)}
+      <p
+        className={cn(
+          "mt-2 text-2xl font-semibold tracking-tight tabular-nums",
+          available ? "text-zinc-900" : "text-zinc-400",
+        )}
+      >
+        {available ? formatValue(kpi.value, kpi.valueMode) : "—"}
       </p>
       <span
         className={cn(
@@ -48,7 +56,9 @@ export function KpiCard({ kpi }: { kpi: OverviewKpi }) {
         <DeltaIcon direction={kpi.deltaDirection} />
         {deltaText}
       </span>
-      <p className="mt-3 text-xs leading-relaxed text-zinc-500">{kpi.interpretation}</p>
+      <p className="mt-3 text-xs leading-relaxed text-zinc-500">
+        {available ? kpi.interpretation : (kpi.unavailableReason ?? kpi.interpretation)}
+      </p>
     </article>
   );
 }

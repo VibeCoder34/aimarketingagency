@@ -76,12 +76,20 @@ export function MetaConnectionActions({
         </form>
       )}
       {showAdvancedLink && status !== "not_connected" && (
-        <Link
-          href="/ad-accounts/meta-data-explorer"
-          className="text-sm text-[var(--adpilot-text-muted)] hover:text-[var(--adpilot-accent)] hover:underline"
-        >
-          Advanced: Meta Data Explorer
-        </Link>
+        <div className="flex flex-col gap-1">
+          <Link
+            href="/ad-accounts/meta-data-explorer"
+            className="text-sm text-[var(--adpilot-text-muted)] hover:text-[var(--adpilot-accent)] hover:underline"
+          >
+            Advanced: Meta Data Explorer
+          </Link>
+          <Link
+            href="/settings/meta-reporting-debug"
+            className="text-sm text-[var(--adpilot-text-muted)] hover:text-[var(--adpilot-accent)] hover:underline"
+          >
+            Internal: Reporting data audit
+          </Link>
+        </div>
       )}
     </div>
   );
